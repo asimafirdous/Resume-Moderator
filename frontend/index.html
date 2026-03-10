@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Moderator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+
+        <h2>Resume Moderator</h2>
+        <p>Optimize your resume for ATS systems</p>
+
+        <input type="file" id="resume">
+        <input type="text" id="companyName" placeholder="Company Name">
+        <input type="text" id="jobRole" placeholder="Job Role / Title">
+        <textarea id="jobDescription" placeholder="Paste Job Description"></textarea>
+
+        <button onclick="analyzeResume()">Analyze Resume</button>
+
+        <div class="progress">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <div id="scoreText"></div>
+
+        <div id="result"></div>
+
+        <div id="confirmDiv" style="display:none; margin-top:20px;">
+            <button onclick="showOptimizedResume()">Show Optimized Resume & Download</button>
+        </div>
+
+        <div id="optimizedResumeDiv" style="display:none; margin-top:20px;">
+            <h3>Optimized Resume Preview</h3>
+            <div class="resume-preview-container">
+                <pre id="optimizedResume"></pre>
+            </div>
+            <button onclick="downloadResume()">Download PDF</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
