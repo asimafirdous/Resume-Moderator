@@ -43,7 +43,6 @@ async function analyzeResume() {
         progressBar.style.width = score + "%";
         scoreText.innerHTML = "<h3>ATS Score: " + score + "%</h3>";
 
-        // Suggestions
         let suggestionsHtml = "";
         data.improvement_suggestions.forEach(s => {
             suggestionsHtml += "<li>" + s + "</li>";
@@ -56,14 +55,13 @@ async function analyzeResume() {
 
         optimizedResumeGlobal = data.optimized_resume;
 
-        // Show confirm button
         confirmDiv.style.display = "block";
 
     } catch (error) {
         console.error(error);
         resultDiv.innerHTML = `
             <p style="color:red">
-            Could not connect to backend. Make sure the server is running on port 8000.
+            Could not connect to backend. Please try again later.
             </p>
         `;
     }
