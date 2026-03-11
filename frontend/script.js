@@ -30,7 +30,7 @@ async function analyzeResume() {
     resultDiv.innerHTML = "Analyzing resume...";
 
     try {
-        const response = await fetch("/analyze", {
+        const response = await fetch("/api/analyze", {
             method: "POST",
             body: formData
         });
