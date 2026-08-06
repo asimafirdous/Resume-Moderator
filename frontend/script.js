@@ -1,100 +1,97 @@
-let optimizedResumeGlobal = ""; 
+let optimizedResumeGlobal = "";
+
+document.getElementById("resumeForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    analyzeResume();
+});
+
+function escapeHtml(value) {
+    const element = document.createElement("div");
+    element.textContent = value;
+    return element.innerHTML;
+}
 
 async function analyzeResume() {
-
     const fileInput = document.getElementById("resume");
-    const companyName = document.getElementById("companyName").value;
-    const jobRole = document.getElementById("jobRole").value;
-    const jobDescription = document.getElementById("jobDescription").value;
-
+    const companyName = document.getElementById("companyName").value.trim();
+    const jobRole = document.getElementById("jobRole").value.trim();
+    const jobDescription = document.getElementById("jobDescription").value.trim();
     const progressBar = document.getElementById("progressBar");
     const scoreText = document.getElementById("scoreText");
     const resultDiv = document.getElementById("result");
     const confirmDiv = document.getElementById("confirmDiv");
     const optimizedDiv = document.getElementById("optimizedResumeDiv");
+    const analyzeButton = document.getElementById("analyzeButton");
 
     optimizedDiv.style.display = "none";
     confirmDiv.style.display = "none";
+    progressBar.style.width = "0%";
+    scoreText.innerHTML = "";
 
-    if (fileInput.files.length === 0) {
-        alert("Upload resume first");
+    if (fileInput.files.length === 0 || !jobDescription) {
+        resultDiv.innerHTML = '<p class="error-message">Please upload your resume and add the job description.</p>';
+        return;
+    }
+
+    const file = fileInput.files[0];
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+        resultDiv.innerHTML = '<p class="error-message">Please choose a PDF resume.</p>';
+        return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+        resultDiv.innerHTML = '<p class="error-message">Please choose a PDF smaller than 4 MB.</p>';
         return;
     }
 
     const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
+    formData.append("file", file);
     formData.append("company_name", companyName);
     formData.append("job_role", jobRole);
     formData.append("job_description", jobDescription);
 
-    resultDiv.innerHTML = "Analyzing resume...";
+    resultDiv.innerHTML = '<p class="loading-message">Analyzing your resume…</p>';
+    analyzeButton.disabled = true;
+    analyzeButton.textContent = "Analyzing…";
 
     try {
-        const response = await fetch("/api/analyze", {
-            method: "POST",
-            body: formData
-        });
-
-        if (!response.ok) throw new Error("Server error");
-
+        const response = await fetch("/api/analyze", { method: "POST", body: formData });
         const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || data.error || "Unable to analyze the resume.");
 
-        const score = data.ats_score;
-        progressBar.style.width = score + "%";
-        scoreText.innerHTML = "<h3>ATS Score: " + score + "%</h3>";
-
-        let suggestionsHtml = "";
-        data.improvement_suggestions.forEach(s => {
-            suggestionsHtml += "<li>" + s + "</li>";
-        });
-
-        resultDiv.innerHTML = `
-            <h3>Improvement Suggestions</h3>
-            <ul>${suggestionsHtml}</ul>
-        `;
-
+        progressBar.style.width = `${data.ats_score}%`;
+        scoreText.innerHTML = `<h2>ATS match: ${data.ats_score}%</h2>`;
+        const suggestions = data.improvement_suggestions.map((suggestion) => `<li>${escapeHtml(suggestion)}</li>`).join("");
+        resultDiv.innerHTML = `<h2>Keyword suggestions</h2>${suggestions ? `<ul>${suggestions}</ul>` : '<p class="success-message">Great match — no missing keywords were found.</p>'}`;
         optimizedResumeGlobal = data.optimized_resume;
-
         confirmDiv.style.display = "block";
-
     } catch (error) {
         console.error(error);
-        resultDiv.innerHTML = `
-            <p style="color:red">
-            Could not connect to backend. Please try again later.
-            </p>
-        `;
+        resultDiv.innerHTML = `<p class="error-message">${escapeHtml(error.message || "Could not connect to the backend. Please try again.")}</p>`;
+    } finally {
+        analyzeButton.disabled = false;
+        analyzeButton.textContent = "Analyze resume";
     }
 }
 
 function showOptimizedResume() {
+    document.getElementById("optimizedResume").textContent = optimizedResumeGlobal;
     const optimizedDiv = document.getElementById("optimizedResumeDiv");
-    const optimizedPre = document.getElementById("optimizedResume");
-    optimizedPre.textContent = optimizedResumeGlobal;
     optimizedDiv.style.display = "block";
-    optimizedDiv.scrollIntoView({ behavior: "smooth" });
+    optimizedDiv.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function downloadResume() {
-    if (!optimizedResumeGlobal) {
-        alert("No optimized resume to download. Please analyze first.");
-        return;
-    }
-
+    if (!optimizedResumeGlobal) return;
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const lines = optimizedResumeGlobal.split("\n");
+    const lines = doc.splitTextToSize(optimizedResumeGlobal, 190);
     let y = 10;
     const lineHeight = 7;
     const pageHeight = doc.internal.pageSize.height;
     lines.forEach((line) => {
-        if (y > pageHeight - 10) {  
-            doc.addPage();
-            y = 10;
-        }
+        if (y > pageHeight - 10) { doc.addPage(); y = 10; }
         doc.text(line, 10, y);
         y += lineHeight;
     });
-
     doc.save("Optimized_Resume.pdf");
 }
