@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 try:
     from .ats_score import calculate_ats_score
-except ImportError:  # Vercel runs this file as a standalone entry point.
+except ImportError:
     from ats_score import calculate_ats_score
 
 
@@ -44,7 +44,7 @@ def home():
     return {"message": "Resume Moderator API Running"}
 
 
-@app.post("/analyze")
+@app.post("/api/analyze")
 async def analyze_resume(
     file: UploadFile = File(...),
     company_name: str = Form(""),
