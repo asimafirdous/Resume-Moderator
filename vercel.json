@@ -1,10 +1,10 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "builds": [
     {
-      "src": "backend/main.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb" }
+      "src": "api/analyze.py",
+      "use": "@vercel/python"
     },
     {
       "src": "frontend/**",
@@ -15,11 +15,11 @@
     {
       "src": "/api/analyze",
       "methods": ["POST"],
-      "dest": "backend/main.py"
+      "dest": "/api/analyze.py"
     },
     {
       "src": "/(.*)",
-      "dest": "frontend/$1"
+      "dest": "/frontend/$1"
     }
   ]
 }

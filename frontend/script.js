@@ -5,6 +5,11 @@ document.getElementById("resumeForm").addEventListener("submit", (event) => {
     analyzeResume();
 });
 
+document.getElementById("resume").addEventListener("change", (event) => {
+    const selectedFile = event.target.files[0];
+    document.getElementById("fileName").textContent = selectedFile ? selectedFile.name : "Choose your resume PDF";
+});
+
 function escapeHtml(value) {
     const element = document.createElement("div");
     element.textContent = value;

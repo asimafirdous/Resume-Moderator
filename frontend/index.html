@@ -17,9 +17,14 @@
         </header>
 
         <form id="resumeForm" novalidate>
-            <label for="resume">Resume PDF <span aria-hidden="true">*</span></label>
-            <input type="file" id="resume" accept="application/pdf,.pdf" required>
-            <p class="field-hint">PDF only, up to 4 MB and 20 pages.</p>
+            <div class="upload-field">
+                <span class="field-label">Resume PDF <span aria-hidden="true">*</span></span>
+                <input class="file-input" type="file" id="resume" accept="application/pdf,.pdf" required>
+                <label class="file-dropzone" for="resume">
+                    <span class="upload-icon" aria-hidden="true">↑</span>
+                    <span><strong id="fileName">Choose your resume PDF</strong><small>PDF only · Up to 4 MB · 20 pages maximum</small></span>
+                </label>
+            </div>
 
             <div class="field-grid">
                 <div>

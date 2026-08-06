@@ -24,9 +24,15 @@ h2 { font-size: 1.15rem; margin: 20px 0 10px; }
 .eyebrow { color: #2563eb; font-size: .82rem; font-weight: 800; letter-spacing: .08em; margin: 0; text-transform: uppercase; }
 .intro, .field-hint { color: #5d687d; line-height: 1.5; }
 .field-hint { font-size: .82rem; margin: -9px 0 18px; }
-label { display: block; font-size: .9rem; font-weight: 700; margin: 15px 0 7px; text-align: left; }
+label, .field-label { display: block; font-size: .9rem; font-weight: 700; margin: 15px 0 7px; text-align: left; }
 .optional { color: #6b7280; font-size: .78rem; font-weight: 500; }
 .field-grid { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); }
+.file-input { height: 1px; opacity: 0; overflow: hidden; position: absolute; width: 1px; }
+.file-dropzone { align-items: center; background: #f8fbff; border: 1.5px dashed #93c5fd; border-radius: 12px; cursor: pointer; display: flex; gap: 12px; margin: 7px 0 18px; padding: 14px 16px; transition: background .2s, border-color .2s, transform .2s; }
+.file-dropzone:hover { background: #eff6ff; border-color: #2563eb; transform: translateY(-1px); }
+.file-dropzone strong { color: #1e3a8a; display: block; font-size: .92rem; }
+.file-dropzone small { color: #64748b; display: block; font-size: .77rem; font-weight: 500; margin-top: 3px; }
+.upload-icon { align-items: center; background: #dbeafe; border-radius: 9px; color: #2563eb; display: inline-flex; font-size: 1.25rem; font-weight: 800; height: 36px; justify-content: center; width: 36px; }
 
 input, textarea {
     border: 1px solid #cbd5e1;
@@ -41,6 +47,7 @@ input, textarea {
 
 textarea { min-height: 150px; resize: vertical; }
 input:focus, textarea:focus { border-color: #2563eb; box-shadow: 0 0 0 3px #dbeafe; outline: 0; }
+.file-input:focus + .file-dropzone { border-color: #2563eb; box-shadow: 0 0 0 3px #dbeafe; outline: 0; }
 
 button {
     background: #2563eb;
